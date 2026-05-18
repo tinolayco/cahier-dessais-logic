@@ -178,8 +178,8 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background">
       <Toaster position="top-right" richColors />
       
-      <div className="container mx-auto p-4 md:p-6 max-w-7xl">
-        <header className="mb-6">
+      <div className="container mx-auto p-2 md:p-4 max-w-[1600px]">
+        <header className="mb-4">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-1">
@@ -212,10 +212,10 @@ function App() {
           </div>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="lg:col-span-1">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold">Articles de Test</h2>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-semibold">Articles de Test</h2>
               <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
                 <DialogTrigger asChild>
                   <Button size="sm">
@@ -249,9 +249,9 @@ function App() {
               </Dialog>
             </div>
 
-            <ScrollArea className="h-[calc(100vh-280px)] pr-4">
+            <ScrollArea className="h-[calc(100vh-240px)] pr-3">
               {items.length === 0 ? (
-                <div className="text-center py-12 px-4 border-2 border-dashed border-border rounded-lg">
+                <div className="text-center py-8 px-3 border-2 border-dashed border-border rounded-lg">
                   <FloppyDisk size={48} className="mx-auto mb-3 text-muted-foreground" weight="duotone" />
                   <p className="text-sm text-muted-foreground mb-4">
                     Aucun article de test. Créez votre premier article pour commencer la documentation.
@@ -262,7 +262,7 @@ function App() {
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {items.map((item) => (
                     <TestItemCard
                       key={item.id}
@@ -280,8 +280,8 @@ function App() {
           <div className="lg:col-span-2">
             {selectedItem ? (
               <>
-                <div className="mb-4">
-                  <h2 className="text-xl font-semibold mb-1">{selectedItem.name}</h2>
+                <div className="mb-3">
+                  <h2 className="text-lg font-semibold mb-1">{selectedItem.name}</h2>
                   <p className="text-sm text-muted-foreground">
                     {selectedItem.prerequisites.length}{' '}
                     {selectedItem.prerequisites.length === 1 ? 'pré-requis' : 'pré-requis'} •{' '}
@@ -291,14 +291,14 @@ function App() {
                 </div>
 
                 <Tabs defaultValue="prerequisites" className="w-full">
-                  <TabsList className="grid w-full grid-cols-2 mb-4">
+                  <TabsList className="grid w-full grid-cols-2 mb-3">
                     <TabsTrigger value="prerequisites">Pré-requis</TabsTrigger>
                     <TabsTrigger value="requirements">Exigences</TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="prerequisites" className="mt-0">
-                    <ScrollArea className="h-[calc(100vh-340px)]">
-                      <div className="pr-4">
+                    <ScrollArea className="h-[calc(100vh-300px)]">
+                      <div className="pr-3">
                         <PrerequisitesSection
                           prerequisites={selectedItem.prerequisites}
                           onUpdate={handleUpdatePrerequisites}
@@ -308,7 +308,7 @@ function App() {
                   </TabsContent>
 
                   <TabsContent value="requirements" className="mt-0">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between mb-3">
                       <p className="text-sm text-muted-foreground">
                         {selectedItem.requirements.length}{' '}
                         {selectedItem.requirements.length === 1 ? 'exigence' : 'exigences'}
@@ -319,11 +319,11 @@ function App() {
                       </Button>
                     </div>
 
-                    <Separator className="mb-4" />
+                    <Separator className="mb-3" />
 
-                    <ScrollArea className="h-[calc(100vh-360px)]">
+                    <ScrollArea className="h-[calc(100vh-320px)]">
                       {selectedItem.requirements.length === 0 ? (
-                        <div className="text-center py-12 px-4 border-2 border-dashed border-border rounded-lg">
+                        <div className="text-center py-8 px-3 border-2 border-dashed border-border rounded-lg">
                           <p className="text-sm text-muted-foreground mb-4">
                             Aucune exigence. Ajoutez votre première exigence pour commencer les tests.
                           </p>
@@ -333,7 +333,7 @@ function App() {
                           </Button>
                         </div>
                       ) : (
-                        <div className="space-y-4 pr-4">
+                        <div className="space-y-3 pr-3">
                           {selectedItem.requirements.map((requirement) => (
                             <RequirementCard
                               key={requirement.id}
@@ -349,7 +349,7 @@ function App() {
                 </Tabs>
               </>
             ) : (
-              <div className="flex items-center justify-center h-[calc(100vh-280px)] border-2 border-dashed border-border rounded-lg">
+              <div className="flex items-center justify-center h-[calc(100vh-240px)] border-2 border-dashed border-border rounded-lg">
                 <div className="text-center px-4">
                   <p className="text-muted-foreground mb-2">
                     Sélectionnez un article de test pour voir et gérer ses pré-requis et exigences
