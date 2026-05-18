@@ -29,7 +29,7 @@ function App() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const items = testItems ?? []
+  const items = Array.isArray(testItems) ? testItems : []
   const selectedItem = items.find((item) => item.id === selectedItemId)
 
   const handleAddTestItem = () => {
@@ -46,7 +46,10 @@ function App() {
       createdAt: Date.now()
     }
 
-    setTestItems((current) => [...(current ?? []), newItem])
+    setTestItems((current) => {
+      const currentItems = Array.isArray(current) ? current : []
+      return [...currentItems, newItem]
+    })
     setSelectedItemId(newItem.id)
     setNewItemName('')
     setIsAddDialogOpen(false)
@@ -54,7 +57,10 @@ function App() {
   }
 
   const handleDeleteTestItem = (itemId: string) => {
-    setTestItems((current) => (current ?? []).filter((item) => item.id !== itemId))
+    setTestItems((current) => {
+      const currentItems = Array.isArray(current) ? current : []
+      return currentItems.filter((item) => item.id !== itemId)
+    })
     if (selectedItemId === itemId) {
       setSelectedItemId(null)
     }
@@ -72,21 +78,23 @@ function App() {
       createdAt: Date.now()
     }
 
-    setTestItems((current) =>
-      (current ?? []).map((item) =>
+    setTestItems((current) => {
+      const currentItems = Array.isArray(current) ? current : []
+      return currentItems.map((item) =>
         item.id === selectedItemId
           ? { ...item, requirements: [...item.requirements, newRequirement] }
           : item
       )
-    )
+    })
     toast.success('Exigence ajoutée')
   }
 
   const handleUpdateRequirement = (requirementId: string, updated: TestRequirement) => {
     if (!selectedItemId) return
 
-    setTestItems((current) =>
-      (current ?? []).map((item) =>
+    setTestItems((current) => {
+      const currentItems = Array.isArray(current) ? current : []
+      return currentItems.map((item) =>
         item.id === selectedItemId
           ? {
               ...item,
@@ -96,24 +104,26 @@ function App() {
             }
           : item
       )
-    )
+    })
   }
 
   const handleUpdatePrerequisites = (prerequisites: Prerequisite[]) => {
     if (!selectedItemId) return
 
-    setTestItems((current) =>
-      (current ?? []).map((item) =>
+    setTestItems((current) => {
+      const currentItems = Array.isArray(current) ? current : []
+      return currentItems.map((item) =>
         item.id === selectedItemId ? { ...item, prerequisites } : item
       )
-    )
+    })
   }
 
   const handleDeleteRequirement = (requirementId: string) => {
     if (!selectedItemId) return
 
-    setTestItems((current) =>
-      (current ?? []).map((item) =>
+    setTestItems((current) => {
+      const currentItems = Array.isArray(current) ? current : []
+      return currentItems.map((item) =>
         item.id === selectedItemId
           ? {
               ...item,
@@ -121,7 +131,7 @@ function App() {
             }
           : item
       )
-    )
+    })
     toast.success('Exigence supprimée')
   }
 
