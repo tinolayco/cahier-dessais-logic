@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cahier d'Essais - Documentation QA Logiciel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f5f9 0%, #e8e8f0 50%, #f5f5f9 100%);
+            color: #2a2a3e;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        code, pre, .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        header {
+            margin-bottom: 24px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            color: #6b6b85;
+            font-size: 0.95rem;
+        }
+
+        .current-file {
+            font-size: 0.875rem;
+            color: #5e4db8;
+            font-family: 'JetBrains Mono', monospace;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid #d4d4dd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: #f5f5f9;
+            border-color: #5e4db8;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #5e4db8;
+            color: white;
+            border-color: #5e4db8;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #4d3d9a;
+            border-color: #4d3d9a;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e8e8f0;
+            padding: 16px;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .panel-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .test-items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: calc(100vh - 280px);
+            overflow-y: auto;
+        }
+
+        .test-item-card {
+            padding: 12px;
+            border: 2px solid #e8e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .test-item-card:hover {
+            border-color: #5e4db8;
+            background: #f9f8fd;
+        }
+
+        .test-item-card.selected {
+            border-color: #5e4db8;
+            background: #f5f3ff;
+        }
+
+        .test-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .test-item-name {
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .test-item-meta {
+            font-size: 0.75rem;
+            color: #6b6b85;
+            margin-top: 4px;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #d946a3;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .delete-btn:hover {
+            background: #fef2f8;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 16px;
+            border: 2px dashed #d4d4dd;
+            border-radius: 12px;
+            color: #6b6b85;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 4px;
+            border-bottom: 1px solid #e8e8f0;
+            margin-bottom: 16px;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            background: #f5f5f9;
+        }
+
+        .tab.active {
+            border-bottom-color: #5e4db8;
+            font-weight: 600;
+            color: #5e4db8;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .requirement-card, .prerequisite-card {
+            border: 1px solid #e8e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            background: #fafafa;
+        }
+
+        .requirement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d4d4dd;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .textarea:focus {
+            outline: none;
+            border-color: #5e4db8;
+            box-shadow: 0 0 0 3px rgba(94, 77, 184, 0.1);
+        }
+
+        .images-section {
+            margin: 12px 0;
+        }
+
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .image-container {
+            position: relative;
+            aspect-ratio: 16/9;
+            border: 1px solid #e8e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .image-delete {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            color: #d946a3;
+        }
+
+        .image-delete:hover {
+            background: white;
+        }
+
+        .image-upload-zone {
+            border: 2px dashed #d4d4dd;
+            border-radius: 6px;
+            padding: 16px;
+            text-align: center;
+            margin-top: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .image-upload-zone:hover {
+            border-color: #5e4db8;
+            background: #f9f8fd;
+        }
+
+        .image-upload-zone.drag-over {
+            border-color: #5e4db8;
+            background: #f5f3ff;
+        }
+
+        .criteria-list {
+            margin-top: 12px;
+        }
+
+        .criterion-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+        }
+
+        .criterion-item:hover {
+            background: #f5f5f9;
+        }
+
+        .checkbox {
+            margin-top: 2px;
+            cursor: pointer;
+        }
+
+        .criterion-input {
+            flex: 1;
+            padding: 4px 8px;
+            border: 1px solid #e8e8f0;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+        }
+
+        .criterion-input:focus {
+            outline: none;
+            border-color: #5e4db8;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .modal-header {
+            margin-bottom: 16px;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .modal-description {
+            color: #6b6b85;
+            font-size: 0.875rem;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 16px;
+        }
+
+        .input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d4d4dd;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: #5e4db8;
+            box-shadow: 0 0 0 3px rgba(94, 77, 184, 0.1);
+        }
+
+        .content-area {
+            max-height: calc(100vh - 320px);
+            overflow-y: auto;
+        }
+
+        .label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        .toast {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            min-width: 250px;
+        }
+
+        .toast.active {
+            display: flex;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast.success {
+            border-left: 4px solid #4ade80;
+        }
+
+        .toast.error {
+            border-left: 4px solid #f87171;
+        }
+
+        .section-header {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #4a4a5e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div>
+                    <h1>Cahier d'Essais</h1>
+                    <p class="subtitle">Documentation QA Logiciel & Suivi des Tests</p>
+                    <div class="current-file" id="currentFile" style="display: none;">
+                        📄 <span id="fileName"></span>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn" onclick="newDocument()">
+                        📄 Nouveau
+                    </button>
+                    <button class="btn" onclick="loadDocument()">
+                        📁 Charger
+                    </button>
+                    <button class="btn" onclick="saveDocument()" id="saveBtn" disabled>
+                        💾 Sauvegarder
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-grid">
+            <div>
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">Articles de Test</h2>
+                        <button class="btn btn-primary btn-sm" onclick="showAddItemModal()">
+                            + Ajouter
+                        </button>
+                    </div>
+                    <div class="test-items-list" id="testItemsList">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📋</div>
+                            <p>Aucun article de test</p>
+                            <button class="btn btn-primary btn-sm" onclick="showAddItemModal()" style="margin-top: 12px;">
+                                + Créer le Premier Article
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="panel" id="detailPanel">
+                    <div class="empty-state">
+                        <p>Sélectionnez un article de test pour voir et gérer ses pré-requis et exigences</p>
+                        <p style="margin-top: 8px; font-size: 0.875rem;">ou créez un nouvel article de test pour commencer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="addItemModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Ajouter un Article de Test</h3>
+                <p class="modal-description">Créez un nouvel article de test (end item) pour organiser vos exigences de test.</p>
+            </div>
+            <div>
+                <input type="text" class="input" id="newItemName" placeholder="ex: Module de Connexion, Barre de Navigation, Processus de Paiement">
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="hideAddItemModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="addTestItem()">Créer</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script>
+        let testData = {
+            version: '1.0',
+            items: [],
+            exportedAt: null
+        };
+        
+        let currentFileName = null;
+        let selectedItemId = null;
+
+        function generateId() {
+            return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.className = `toast ${type} active`;
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 3000);
+        }
+
+        function showAddItemModal() {
+            document.getElementById('addItemModal').classList.add('active');
+            document.getElementById('newItemName').focus();
+        }
+
+        function hideAddItemModal() {
+            document.getElementById('addItemModal').classList.remove('active');
+            document.getElementById('newItemName').value = '';
+        }
+
+        function addTestItem() {
+            const name = document.getElementById('newItemName').value.trim();
+            if (!name) {
+                showToast('Veuillez entrer un nom d\'article de test', 'error');
+                return;
+            }
+
+            const newItem = {
+                id: generateId(),
+                name: name,
+                prerequisites: [],
+                requirements: [],
+                createdAt: Date.now()
+            };
+
+            testData.items.push(newItem);
+            selectedItemId = newItem.id;
+            hideAddItemModal();
+            renderTestItems();
+            renderDetailPanel();
+            updateSaveButton();
+            showToast('Article de test créé');
+        }
+
+        function deleteTestItem(itemId, event) {
+            event.stopPropagation();
+            if (!confirm('Êtes-vous sûr de vouloir supprimer cet article de test?')) {
+                return;
+            }
+            testData.items = testData.items.filter(item => item.id !== itemId);
+            if (selectedItemId === itemId) {
+                selectedItemId = null;
+            }
+            renderTestItems();
+            renderDetailPanel();
+            updateSaveButton();
+            showToast('Article de test supprimé');
+        }
+
+        function selectTestItem(itemId) {
+            selectedItemId = itemId;
+            renderTestItems();
+            renderDetailPanel();
+        }
+
+        function renderTestItems() {
+            const container = document.getElementById('testItemsList');
+            
+            if (testData.items.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <p>Aucun article de test</p>
+                        <button class="btn btn-primary btn-sm" onclick="showAddItemModal()" style="margin-top: 12px;">
+                            + Créer le Premier Article
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = testData.items.map(item => `
+                <div class="test-item-card ${selectedItemId === item.id ? 'selected' : ''}" onclick="selectTestItem('${item.id}')">
+                    <div class="test-item-header">
+                        <div style="flex: 1;">
+                            <div class="test-item-name">${item.name}</div>
+                            <div class="test-item-meta">
+                                ${item.prerequisites.length} pré-requis • ${item.requirements.length} exigences
+                            </div>
+                        </div>
+                        <button class="delete-btn" onclick="deleteTestItem('${item.id}', event)">×</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderDetailPanel() {
+            const panel = document.getElementById('detailPanel');
+            
+            if (!selectedItemId) {
+                panel.innerHTML = `
+                    <div class="empty-state">
+                        <p>Sélectionnez un article de test pour voir et gérer ses pré-requis et exigences</p>
+                        <p style="margin-top: 8px; font-size: 0.875rem;">ou créez un nouvel article de test pour commencer</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const item = testData.items.find(i => i.id === selectedItemId);
+            if (!item) return;
+
+            panel.innerHTML = `
+                <div>
+                    <h2 class="panel-title" style="margin-bottom: 8px;">${item.name}</h2>
+                    <p class="subtitle">${item.prerequisites.length} pré-requis • ${item.requirements.length} exigences</p>
+                </div>
+
+                <div class="tabs" style="margin-top: 16px;">
+                    <button class="tab active" onclick="switchTab('prerequisites')">Pré-requis</button>
+                    <button class="tab" onclick="switchTab('requirements')">Exigences</button>
+                </div>
+
+                <div class="tab-content active" id="prerequisitesTab">
+                    <div class="panel-header" style="margin-bottom: 16px;">
+                        <span class="subtitle">${item.prerequisites.length} pré-requis</span>
+                        <button class="btn btn-primary btn-sm" onclick="addPrerequisite()">+ Ajouter Pré-requis</button>
+                    </div>
+                    <div class="content-area" id="prerequisitesList"></div>
+                </div>
+
+                <div class="tab-content" id="requirementsTab">
+                    <div class="panel-header" style="margin-bottom: 16px;">
+                        <span class="subtitle">${item.requirements.length} exigences</span>
+                        <button class="btn btn-primary btn-sm" onclick="addRequirement()">+ Ajouter Exigence</button>
+                    </div>
+                    <div class="content-area" id="requirementsList"></div>
+                </div>
+            `;
+
+            renderPrerequisites();
+            renderRequirements();
+        }
+
+        function switchTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach((tab, index) => {
+                if ((tabName === 'prerequisites' && index === 0) || (tabName === 'requirements' && index === 1)) {
+                    tab.classList.add('active');
+                    tabContents[index].classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                    tabContents[index].classList.remove('active');
+                }
+            });
+        }
+
+        function addPrerequisite() {
+            const item = testData.items.find(i => i.id === selectedItemId);
+            if (!item) return;
+
+            const newPrereq = {
+                id: generateId(),
+                description: '',
+                images: [],
+                createdAt: Date.now()
+            };
+
+            item.prerequisites.push(newPrereq);
+            renderDetailPanel();
+            showToast('Pré-requis ajouté');
+        }
+
+        function deletePrerequisite(prereqId) {
+            const item = testData.items.find(i => i.id === selectedItemId);
+            if (!item) return;
+
+            item.prerequisites = item.prerequisites.filter(p => p.id !== prereqId);
+            renderDetailPanel();
+            showToast('Pré-requis supprimé');
+        }
+
+        function updatePrerequisiteDescription(prereqId, value) {
+            const item = testData.items.find(i => i.id === selectedItemId);
+            if (!item) return;
+
+            const prereq = item.prerequisites.find(p => p.id === prereqId);
+            if (prereq) {
+                prereq.description = value;
+            }
+        }
+
+        function handlePrerequisiteImageUpload(prereqId, files) {
+            const item = testData.items.find(i => i.id === selectedItemId);
+            if (!item) return;
+
+            const prereq = item.prerequisites.find(p => p.id === prereqId);
+            if (!prereq) return;
+
+            Array.from(files).forEach(file => {
+                if (file.size > 2 * 1024 * 1024) {
+                    showToast('Image trop grande (max 2Mo)', 'error');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    prereq.images.push(e.target.result);
+                    renderDetailPanel();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function handlePrerequisitePaste(prereqId, event) {
+            const items = event.clipboardData.items;
+            
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    const blob = items[i].getAsFile();
+                    handlePrerequisiteImageUpload(prereqId, [blob]);
+                }
+            }
+        }
+
+        function deletePrerequisiteImage(prereqId, imageIndex) {
+            const item = testData.items.find(i => i.id === selectedItemId);
+            if (!item) return;
+
+            const prereq = item.prerequisites.find(p => p.id === prereqId);
+            if (prereq) {
+                prereq.images.splice(imageIndex, 1);
+                renderDetailPanel();
+            }
+        }
+
+        function renderPrerequisites() {
+            const item = testData.items.find(i => i.id === selectedItemId);
+            if (!item) return;
+
+            const container = document.getElementById('prerequisitesList');
+            
+            if (item.prerequisites.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p>Aucun pré-requis</p>
+                        <button class="btn btn-primary btn-sm" onclick="addPrerequisite()" style="margin-top: 12px;">
+                            + Ajouter le Premier Pré-requis
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = item.prerequisites.map(prereq => `
+                <div class="prerequisite-card">
+                    <div class="requirement-header">
+                        <span class="section-header">Description du Pré-requis</span>
+                        <button class="delete-btn" onclick="deletePrerequisite('${prereq.id}')">×</button>
+                    </div>
+                    <textarea 
+                        class="textarea" 
+                        placeholder="Décrivez le pré-requis..."
+                        oninput="updatePrerequisiteDescription('${prereq.id}', this.value)"
+                        onpaste="handlePrerequisitePaste('${prereq.id}', event)"
+                    >${prereq.description}</textarea>
+                    
+                    <div class="images-section">
+                        <label class="section-header">Images (max 2Mo par image)</label>
+                        <div class="image-upload-zone" onclick="document.getElementById('prereq-file-${prereq.id}').click()">
+                            📸 Cliquez pour ajouter une image ou collez (Ctrl+V) dans la zone de texte
+                        </div>
+                        <input type="file" id="prereq-file-${prereq.id}" accept="image/*" multiple style="display: none;" onchange="handlePrerequisiteImageUpload('${prereq.id}', this.files)">
+                        
+                        ${prereq.images.length > 0 ? `
+                            <div class="images-grid">
+                                ${prereq.images.map((img, idx) => `
+                                    <div class="image-container">
+                                        <img src="${img}" alt="Image ${idx + 1}">
+                                        <button class="image-delete" onclick="deletePrerequisiteImage('${prereq.id}', ${idx})">×</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addRequirement() {
+            const item = testData.items.find(i => i.id === selectedItemId);
+            if (!item) return;
+
+            const newReq = {
+                id: generateId(),
+                content: '',
+                images: [],
+                criteria: [],
+                createdAt: Date.now()
+            };
+
+            item.requirements.push(newReq);
+            renderDetailPanel();
+            showToast('Exigence ajoutée');
+        }
+
+        function deleteRequirement(reqId) {
+            const item = testData.items.find(i => i.id === selectedItemId);
+            if (!item) return;
+
+            item.requirements = item.requirements.filter(r => r.id !== reqId);
+            renderDetailPanel();
+            showToast('Exigence supprimée');
+        }
+
+        function updateRequirementContent(reqId, value) {
+            const item = testData.items.find(i => i.id === selectedItemId);
+            if (!item) return;
+
+            const req = item.requirements.find(r => r.id === reqId);
+            if (req) {
+                req.content = value;
+            }
+        }
+
+        function handleRequirementImageUpload(reqId, files) {
+            const item = testData.items.find(i => i.id === selectedItemId);
+            if (!item) return;
+
+            const req = item.requirements.find(r => r.id === reqId);
+            if (!req) return;
+
+            Array.from(files).forEach(file => {
+                if (file.size > 2 * 1024 * 1024) {
+                    showToast('Image trop grande (max 2Mo)', 'error');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    req.images.push(e.target.result);
+                    renderDetailPanel();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function handleRequirementPaste(reqId, event) {
+            const items = event.clipboardData.items;
+            
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    const blob = items[i].getAsFile();
+                    handleRequirementImageUpload(reqId, [blob]);
+                }
+            }
+        }
+
+        function deleteRequirementImage(reqId, imageIndex) {
+            const item = testData.items.find(i => i.id === selectedItemId);
+            if (!item) return;
+
+            const req = item.requirements.find(r => r.id === reqId);
+            if (req) {
+                req.images.splice(imageIndex, 1);
+                renderDetailPanel();
+            }
+        }
+
+        function addCriterion(reqId) {
+            const item = testData.items.find(i => i.id === selectedItemId);
+            if (!item) return;
+
+            const req = item.requirements.find(r => r.id === reqId);
+            if (!req) return;
+
+            const newCriterion = {
+                id: generateId(),
+                text: '',
+                checked: false
+            };
+
+            req.criteria.push(newCriterion);
+            renderDetailPanel();
+        }
+
+        function updateCriterionText(reqId, criterionId, value) {
+            const item = testData.items.find(i => i.id === selectedItemId);
+            if (!item) return;
+
+            const req = item.requirements.find(r => r.id === reqId);
+            if (!req) return;
+
+            const criterion = req.criteria.find(c => c.id === criterionId);
+            if (criterion) {
+                criterion.text = value;
+            }
+        }
+
+        function toggleCriterion(reqId, criterionId) {
+            const item = testData.items.find(i => i.id === selectedItemId);
+            if (!item) return;
+
+            const req = item.requirements.find(r => r.id === reqId);
+            if (!req) return;
+
+            const criterion = req.criteria.find(c => c.id === criterionId);
+            if (criterion) {
+                criterion.checked = !criterion.checked;
+            }
+        }
+
+        function deleteCriterion(reqId, criterionId) {
+            const item = testData.items.find(i => i.id === selectedItemId);
+            if (!item) return;
+
+            const req = item.requirements.find(r => r.id === reqId);
+            if (req) {
+                req.criteria = req.criteria.filter(c => c.id !== criterionId);
+                renderDetailPanel();
+            }
+        }
+
+        function renderRequirements() {
+            const item = testData.items.find(i => i.id === selectedItemId);
+            if (!item) return;
+
+            const container = document.getElementById('requirementsList');
+            
+            if (item.requirements.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p>Aucune exigence</p>
+                        <button class="btn btn-primary btn-sm" onclick="addRequirement()" style="margin-top: 12px;">
+                            + Ajouter la Première Exigence
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = item.requirements.map(req => `
+                <div class="requirement-card">
+                    <div class="requirement-header">
+                        <span class="section-header">Description de l'Exigence</span>
+                        <button class="delete-btn" onclick="deleteRequirement('${req.id}')">×</button>
+                    </div>
+                    <textarea 
+                        class="textarea" 
+                        placeholder="Décrivez l'exigence de test (ex: Appuyez sur le bouton <image> et vérifiez...)"
+                        oninput="updateRequirementContent('${req.id}', this.value)"
+                        onpaste="handleRequirementPaste('${req.id}', event)"
+                    >${req.content}</textarea>
+                    
+                    <div class="images-section">
+                        <label class="section-header">Images (max 2Mo par image)</label>
+                        <div class="image-upload-zone" onclick="document.getElementById('req-file-${req.id}').click()">
+                            📸 Cliquez pour ajouter une image ou collez (Ctrl+V) dans la zone de texte
+                        </div>
+                        <input type="file" id="req-file-${req.id}" accept="image/*" multiple style="display: none;" onchange="handleRequirementImageUpload('${req.id}', this.files)">
+                        
+                        ${req.images.length > 0 ? `
+                            <div class="images-grid">
+                                ${req.images.map((img, idx) => `
+                                    <div class="image-container">
+                                        <img src="${img}" alt="Image ${idx + 1}">
+                                        <button class="image-delete" onclick="deleteRequirementImage('${req.id}', ${idx})">×</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="criteria-list">
+                        <div class="requirement-header">
+                            <span class="section-header">Critères Pass/Fail</span>
+                            <button class="btn btn-sm" onclick="addCriterion('${req.id}')">+ Ajouter Critère</button>
+                        </div>
+                        ${req.criteria.length === 0 ? `
+                            <p style="color: #6b6b85; font-size: 0.875rem; margin-top: 8px;">Aucun critère. Ajoutez des critères pass/fail pour cette exigence.</p>
+                        ` : ''}
+                        ${req.criteria.map(criterion => `
+                            <div class="criterion-item">
+                                <input 
+                                    type="checkbox" 
+                                    class="checkbox" 
+                                    ${criterion.checked ? 'checked' : ''} 
+                                    onchange="toggleCriterion('${req.id}', '${criterion.id}')"
+                                >
+                                <input 
+                                    type="text" 
+                                    class="criterion-input" 
+                                    placeholder="Décrivez le critère de pass/fail..."
+                                    value="${criterion.text}"
+                                    oninput="updateCriterionText('${req.id}', '${criterion.id}', this.value)"
+                                >
+                                <button class="delete-btn" onclick="deleteCriterion('${req.id}', '${criterion.id}')">×</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateSaveButton() {
+            document.getElementById('saveBtn').disabled = testData.items.length === 0;
+        }
+
+        function saveDocument() {
+            testData.exportedAt = Date.now();
+            const dataStr = JSON.stringify(testData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = currentFileName || `cahier-essais-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(a.href);
+            
+            currentFileName = a.download;
+            document.getElementById('fileName').textContent = currentFileName;
+            document.getElementById('currentFile').style.display = 'flex';
+            
+            showToast('Document sauvegardé avec succès');
+        }
+
+        function loadDocument() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json,application/json';
+            
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const loaded = JSON.parse(event.target.result);
+                        
+                        if (!loaded.version || !Array.isArray(loaded.items)) {
+                            showToast('Format de document invalide', 'error');
+                            return;
+                        }
+
+                        testData = loaded;
+                        currentFileName = file.name;
+                        selectedItemId = null;
+                        
+                        document.getElementById('fileName').textContent = currentFileName;
+                        document.getElementById('currentFile').style.display = 'flex';
+                        
+                        renderTestItems();
+                        renderDetailPanel();
+                        updateSaveButton();
+                        showToast('Document chargé avec succès');
+                    } catch (error) {
+                        showToast('Échec de la lecture du fichier JSON', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        function newDocument() {
+            if (testData.items.length > 0) {
+                if (!confirm('Voulez-vous créer un nouveau document? Les modifications non sauvegardées seront perdues.')) {
+                    return;
+                }
+            }
+            
+            testData = {
+                version: '1.0',
+                items: [],
+                exportedAt: null
+            };
+            currentFileName = null;
+            selectedItemId = null;
+            
+            document.getElementById('currentFile').style.display = 'none';
+            
+            renderTestItems();
+            renderDetailPanel();
+            updateSaveButton();
+            showToast('Nouveau document créé');
+        }
+
+        document.getElementById('newItemName').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                addTestItem();
+            }
+        });
+
+        document.getElementById('addItemModal').addEventListener('click', (e) => {
+            if (e.target.id === 'addItemModal') {
+                hideAddItemModal();
+            }
+        });
+
+        renderTestItems();
+        updateSaveButton();
+    </script>
+</body>
+</html>
