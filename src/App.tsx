@@ -14,7 +14,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import { Plus, DownloadSimple, UploadSimple, FloppyDisk } from '@phosphor-icons/react'
+import { Plus, FloppyDisk, FolderOpen } from '@phosphor-icons/react'
 import { toast, Toaster } from 'sonner'
 import { TestItemCard } from '@/components/TestItemCard'
 import { RequirementCard } from '@/components/RequirementCard'
@@ -135,16 +135,16 @@ function App() {
     toast.success('Exigence supprimée')
   }
 
-  const handleExport = () => {
+  const handleSave = () => {
     exportNotebook(items)
-    toast.success('Cahier d\'essais exporté')
+    toast.success('Document sauvegardé')
   }
 
-  const handleImportClick = () => {
+  const handleLoadClick = () => {
     fileInputRef.current?.click()
   }
 
-  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLoad = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
@@ -152,9 +152,9 @@ function App() {
       const notebook = await importNotebook(file)
       setTestItems(notebook.items)
       setSelectedItemId(null)
-      toast.success('Cahier d\'essais importé avec succès')
+      toast.success('Document chargé avec succès')
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Échec de l\'importation')
+      toast.error(error instanceof Error ? error.message : 'Échec du chargement')
     }
 
     if (fileInputRef.current) {
@@ -182,16 +182,16 @@ function App() {
                 ref={fileInputRef}
                 type="file"
                 accept=".json"
-                onChange={handleImport}
+                onChange={handleLoad}
                 className="hidden"
               />
-              <Button variant="outline" onClick={handleImportClick}>
-                <UploadSimple className="mr-1.5" weight="duotone" />
-                Importer
+              <Button variant="outline" onClick={handleLoadClick}>
+                <FolderOpen className="mr-1.5" weight="duotone" />
+                Charger
               </Button>
-              <Button variant="outline" onClick={handleExport} disabled={items.length === 0}>
-                <DownloadSimple className="mr-1.5" weight="duotone" />
-                Exporter
+              <Button variant="outline" onClick={handleSave} disabled={items.length === 0}>
+                <FloppyDisk className="mr-1.5" weight="duotone" />
+                Sauvegarder
               </Button>
             </div>
           </div>
