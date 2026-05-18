@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { useKV } from '@github/spark/hooks'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,12 +14,12 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import { Plus, FloppyDisk, FolderOpen } from '@phosphor-icons/react'
+import { Plus, FloppyDisk, FolderOpen, File } from '@phosphor-icons/react'
 import { toast, Toaster } from 'sonner'
 import { TestItemCard } from '@/components/TestItemCard'
 import { RequirementCard } from '@/components/RequirementCard'
 import { PrerequisitesSection } from '@/components/PrerequisitesSection'
-import { exportNotebook, importNotebook, generateId } from '@/lib/notebook-utils'
+import { saveNotebookWithDialog, loadNotebookWithDialog, generateId } from '@/lib/notebook-utils'
 import type { TestItem, TestRequirement, Prerequisite } from '@/lib/types'
 
 function App() {
@@ -27,7 +27,7 @@ function App() {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
   const [newItemName, setNewItemName] = useState('')
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [currentFileName, setCurrentFileName] = useState<string | null>(null)
 
   const items = Array.isArray(testItems) ? testItems : []
   const selectedItem = items.find((item) => item.id === selectedItemId) || null
@@ -135,31 +135,43 @@ function App() {
     toast.success('Exigence supprimée')
   }
 
-  const handleSave = () => {
-    exportNotebook(items)
-    toast.success('Document sauvegardé')
-  }
-
-  const handleLoadClick = () => {
-    fileInputRef.current?.click()
-  }
-
-  const handleLoad = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
+  const handleSave = async () => {
     try {
-      const notebook = await importNotebook(file)
-      setTestItems(notebook.items)
-      setSelectedItemId(null)
-      toast.success('Document chargé avec succès')
+      const fileName = await saveNotebookWithDialog(items, currentFileName || undefined)
+      if (fileName) {
+        setCurrentFileName(fileName)
+        toast.success('Document sauvegardé avec succès')
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Échec de la sauvegarde')
+    }
+  }
+
+  const handleLoad = async () => {
+    try {
+      const result = await loadNotebookWithDialog()
+      if (result) {
+        setTestItems(result.notebook.items)
+        setCurrentFileName(result.fileName)
+        setSelectedItemId(null)
+        toast.success('Document chargé avec succès')
+      }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Échec du chargement')
     }
+  }
 
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
+  const handleNewDocument = () => {
+    if (items.length > 0) {
+      const confirmed = window.confirm(
+        'Voulez-vous créer un nouveau document? Les modifications non sauvegardées seront perdues.'
+      )
+      if (!confirmed) return
     }
+    setTestItems([])
+    setCurrentFileName(null)
+    setSelectedItemId(null)
+    toast.success('Nouveau document créé')
   }
 
   return (
@@ -176,16 +188,19 @@ function App() {
               <p className="text-muted-foreground">
                 Documentation QA Logiciel & Suivi des Tests
               </p>
+              {currentFileName && (
+                <p className="text-sm text-primary font-mono mt-1 flex items-center gap-1.5">
+                  <File size={14} weight="fill" />
+                  {currentFileName}
+                </p>
+              )}
             </div>
             <div className="flex gap-2">
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".json"
-                onChange={handleLoad}
-                className="hidden"
-              />
-              <Button variant="outline" onClick={handleLoadClick}>
+              <Button variant="outline" onClick={handleNewDocument}>
+                <File className="mr-1.5" weight="duotone" />
+                Nouveau
+              </Button>
+              <Button variant="outline" onClick={handleLoad}>
                 <FolderOpen className="mr-1.5" weight="duotone" />
                 Charger
               </Button>
