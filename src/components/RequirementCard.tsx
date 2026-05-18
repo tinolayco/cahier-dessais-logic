@@ -95,11 +95,11 @@ export const RequirementCard = ({ requirement, onUpdate, onDelete }: Requirement
 
       <CardContent className="space-y-4">
         <div>
-          <div className="flex items-center gap-2 mb-2">
+          <div className="mb-2">
             <ImageUpload onImageAdd={handleAddImage} />
-            <span className="text-xs text-muted-foreground">
-              Télécharger, coller ou glisser des images (max 2Mo)
-            </span>
+            <p className="text-xs text-muted-foreground mt-1.5">
+              Sélectionnez un fichier ou cliquez sur la zone de collage et faites Ctrl+V pour coller une image (max 2Mo)
+            </p>
           </div>
           {images.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-2">

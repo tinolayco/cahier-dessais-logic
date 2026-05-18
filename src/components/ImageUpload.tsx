@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Image, X } from '@phosphor-icons/react'
+import { Image, X, ClipboardText } from '@phosphor-icons/react'
 import { imageToBase64 } from '@/lib/notebook-utils'
 import { toast } from 'sonner'
 
@@ -11,7 +11,9 @@ interface ImageUploadProps {
 
 export const ImageUpload = ({ onImageAdd, className = '' }: ImageUploadProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const pasteAreaRef = useRef<HTMLDivElement>(null)
   const [isDragging, setIsDragging] = useState(false)
+  const [isPasteFocused, setIsPasteFocused] = useState(false)
 
   const handleFileSelect = async (files: FileList | null) => {
     if (!files || files.length === 0) return
@@ -60,16 +62,7 @@ export const ImageUpload = ({ onImageAdd, className = '' }: ImageUploadProps) =>
   }
 
   return (
-    <div
-      className={className}
-      onPaste={handlePaste}
-      onDragOver={(e) => {
-        e.preventDefault()
-        setIsDragging(true)
-      }}
-      onDragLeave={() => setIsDragging(false)}
-      onDrop={handleDrop}
-    >
+    <div className={`flex gap-2 items-stretch ${className}`}>
       <input
         ref={fileInputRef}
         type="file"
@@ -82,11 +75,40 @@ export const ImageUpload = ({ onImageAdd, className = '' }: ImageUploadProps) =>
         variant="outline"
         size="sm"
         onClick={() => fileInputRef.current?.click()}
-        className={isDragging ? 'border-primary' : ''}
       >
         <Image className="mr-1.5" weight="duotone" />
-        Ajouter Image
+        Fichier
       </Button>
+      
+      <div
+        ref={pasteAreaRef}
+        tabIndex={0}
+        onPaste={handlePaste}
+        onFocus={() => setIsPasteFocused(true)}
+        onBlur={() => setIsPasteFocused(false)}
+        onDragOver={(e) => {
+          e.preventDefault()
+          setIsDragging(true)
+        }}
+        onDragLeave={() => setIsDragging(false)}
+        onDrop={handleDrop}
+        className={`
+          flex items-center gap-2 px-3 py-1.5 rounded-md border-2 border-dashed 
+          transition-all cursor-pointer
+          ${isDragging ? 'border-primary bg-primary/5' : 'border-border hover:border-accent'}
+          ${isPasteFocused ? 'border-accent bg-accent/5 ring-2 ring-accent/20' : ''}
+        `}
+        role="button"
+        aria-label="Zone de collage d'image"
+      >
+        <ClipboardText 
+          weight="duotone" 
+          className={isPasteFocused || isDragging ? 'text-accent' : 'text-muted-foreground'} 
+        />
+        <span className="text-xs text-muted-foreground">
+          {isDragging ? 'Déposez l\'image ici' : 'Cliquez et collez (Ctrl+V)'}
+        </span>
+      </div>
     </div>
   )
 }

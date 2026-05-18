@@ -108,11 +108,11 @@ export const PrerequisitesSection = ({ prerequisites, onUpdate }: PrerequisitesS
               <CardContent>
                 <Separator className="mb-3" />
                 <div>
-                  <div className="flex items-center gap-2 mb-2">
+                  <div className="mb-2">
                     <ImageUpload onImageAdd={(img) => handleAddImage(prereq.id, img)} />
-                    <span className="text-xs text-muted-foreground">
-                      Télécharger, coller ou glisser des images (max 2Mo)
-                    </span>
+                    <p className="text-xs text-muted-foreground mt-1.5">
+                      Sélectionnez un fichier ou cliquez sur la zone de collage et faites Ctrl+V pour coller une image (max 2Mo)
+                    </p>
                   </div>
                   {Array.isArray(prereq.images) && prereq.images.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-2">
