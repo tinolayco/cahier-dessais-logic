@@ -181,7 +181,10 @@ function App() {
       <div className="container mx-auto p-2 md:p-3 max-w-[1800px]">
         <header className="mb-4">
           <div className="flex items-center justify-between flex-wrap gap-4">
-            <div>
+            <div className="relative">
+              <div className="absolute -left-2 top-0 bg-accent text-accent-foreground px-2 py-0.5 rounded text-xs font-mono font-semibold">
+                v1.0.0
+              </div>
               <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-1">
                 Cahier d'Essais
               </h1>
