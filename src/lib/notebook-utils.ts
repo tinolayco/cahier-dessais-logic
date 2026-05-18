@@ -2,6 +2,10 @@ import type { TestNotebook, TestItem } from './types'
 
 export const saveNotebookWithDialog = async (items: TestItem[], currentFileName?: string): Promise<string | null> => {
   try {
+    if (!Array.isArray(items)) {
+      throw new Error('Les données doivent être un tableau')
+    }
+
     const notebook: TestNotebook = {
       version: '1.0',
       items,
@@ -95,7 +99,9 @@ export const loadNotebookWithDialog = async (): Promise<{ notebook: TestNotebook
 
 export const imageToBase64 = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
-    if (file.size > 2 * 1024 * 1024) {
+    const MAX_SIZE = 2 * 1024 * 1024
+    
+    if (file.size > MAX_SIZE) {
       reject(new Error('La taille de l\'image dépasse la limite de 2Mo'))
       return
     }
@@ -107,8 +113,8 @@ export const imageToBase64 = (file: File): Promise<string> => {
     
     const reader = new FileReader()
     reader.onload = (e) => {
-      const result = e.target?.result as string
-      if (result && result.startsWith('data:image/')) {
+      const result = e.target?.result
+      if (typeof result === 'string' && result.startsWith('data:image/')) {
         resolve(result)
       } else {
         reject(new Error('Format d\'image invalide'))
