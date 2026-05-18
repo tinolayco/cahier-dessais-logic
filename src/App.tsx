@@ -178,7 +178,7 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background">
       <Toaster position="top-right" richColors />
       
-      <div className="container mx-auto p-2 md:p-4 md:pl-6 max-w-[1800px]">
+      <div className="container mx-auto p-2 md:p-3 max-w-[1800px]">
         <header className="mb-4">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
