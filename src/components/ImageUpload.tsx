@@ -18,16 +18,16 @@ export const ImageUpload = ({ onImageAdd, className = '' }: ImageUploadProps) =>
 
     const file = files[0]
     if (!file.type.startsWith('image/')) {
-      toast.error('Please select an image file')
+      toast.error('Veuillez sélectionner un fichier image')
       return
     }
 
     try {
       const base64 = await imageToBase64(file)
       onImageAdd(base64)
-      toast.success('Image added')
+      toast.success('Image ajoutée')
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to add image')
+      toast.error(error instanceof Error ? error.message : 'Échec de l\'ajout de l\'image')
     }
   }
 
@@ -43,9 +43,9 @@ export const ImageUpload = ({ onImageAdd, className = '' }: ImageUploadProps) =>
           try {
             const base64 = await imageToBase64(file)
             onImageAdd(base64)
-            toast.success('Image pasted')
+            toast.success('Image collée')
           } catch (error) {
-            toast.error(error instanceof Error ? error.message : 'Failed to paste image')
+            toast.error(error instanceof Error ? error.message : 'Échec du collage de l\'image')
           }
         }
         break
@@ -85,7 +85,7 @@ export const ImageUpload = ({ onImageAdd, className = '' }: ImageUploadProps) =>
         className={isDragging ? 'border-primary' : ''}
       >
         <Image className="mr-1.5" weight="duotone" />
-        Add Image
+        Ajouter Image
       </Button>
     </div>
   )

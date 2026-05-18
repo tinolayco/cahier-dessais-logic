@@ -12,9 +12,17 @@ export interface TestRequirement {
   createdAt: number
 }
 
+export interface Prerequisite {
+  id: string
+  description: string
+  images: string[]
+  createdAt: number
+}
+
 export interface TestItem {
   id: string
   name: string
+  prerequisites: Prerequisite[]
   requirements: TestRequirement[]
   createdAt: number
 }

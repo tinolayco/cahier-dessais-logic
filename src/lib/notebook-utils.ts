@@ -45,7 +45,7 @@ export const importNotebook = (file: File): Promise<TestNotebook> => {
 export const imageToBase64 = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
     if (file.size > 2 * 1024 * 1024) {
-      reject(new Error('Image size exceeds 2MB limit'))
+      reject(new Error('La taille de l\'image dépasse la limite de 2Mo'))
       return
     }
     
@@ -53,7 +53,7 @@ export const imageToBase64 = (file: File): Promise<string> => {
     reader.onload = (e) => {
       resolve(e.target?.result as string)
     }
-    reader.onerror = () => reject(new Error('Failed to read image'))
+    reader.onerror = () => reject(new Error('Échec de la lecture de l\'image'))
     reader.readAsDataURL(file)
   })
 }

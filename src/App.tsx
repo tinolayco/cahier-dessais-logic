@@ -11,14 +11,16 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { Plus, DownloadSimple, UploadSimple, FloppyDisk } from '@phosphor-icons/react'
 import { toast, Toaster } from 'sonner'
 import { TestItemCard } from '@/components/TestItemCard'
 import { RequirementCard } from '@/components/RequirementCard'
+import { PrerequisitesSection } from '@/components/PrerequisitesSection'
 import { exportNotebook, importNotebook, generateId } from '@/lib/notebook-utils'
-import type { TestItem, TestRequirement } from '@/lib/types'
+import type { TestItem, TestRequirement, Prerequisite } from '@/lib/types'
 
 function App() {
   const [testItems, setTestItems] = useKV<TestItem[]>('test-items', [])
@@ -39,6 +41,7 @@ function App() {
     const newItem: TestItem = {
       id: generateId(),
       name: newItemName,
+      prerequisites: [],
       requirements: [],
       createdAt: Date.now()
     }
@@ -92,6 +95,16 @@ function App() {
               )
             }
           : item
+      )
+    )
+  }
+
+  const handleUpdatePrerequisites = (prerequisites: Prerequisite[]) => {
+    if (!selectedItemId) return
+
+    setTestItems((current) =>
+      (current ?? []).map((item) =>
+        item.id === selectedItemId ? { ...item, prerequisites } : item
       )
     )
   }
@@ -242,52 +255,79 @@ function App() {
           <div className="lg:col-span-2">
             {selectedItem ? (
               <>
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h2 className="text-xl font-semibold">{selectedItem.name}</h2>
-                    <p className="text-sm text-muted-foreground">
-                      {selectedItem.requirements.length}{' '}
-                      {selectedItem.requirements.length === 1 ? 'exigence' : 'exigences'}
-                    </p>
-                  </div>
-                  <Button onClick={handleAddRequirement}>
-                    <Plus weight="bold" className="mr-1.5" />
-                    Ajouter Exigence
-                  </Button>
+                <div className="mb-4">
+                  <h2 className="text-xl font-semibold mb-1">{selectedItem.name}</h2>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedItem.prerequisites.length}{' '}
+                    {selectedItem.prerequisites.length === 1 ? 'pré-requis' : 'pré-requis'} •{' '}
+                    {selectedItem.requirements.length}{' '}
+                    {selectedItem.requirements.length === 1 ? 'exigence' : 'exigences'}
+                  </p>
                 </div>
 
-                <Separator className="mb-4" />
+                <Tabs defaultValue="prerequisites" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2 mb-4">
+                    <TabsTrigger value="prerequisites">Pré-requis</TabsTrigger>
+                    <TabsTrigger value="requirements">Exigences</TabsTrigger>
+                  </TabsList>
 
-                <ScrollArea className="h-[calc(100vh-280px)]">
-                  {selectedItem.requirements.length === 0 ? (
-                    <div className="text-center py-12 px-4 border-2 border-dashed border-border rounded-lg">
-                      <p className="text-sm text-muted-foreground mb-4">
-                        Aucune exigence. Ajoutez votre première exigence pour commencer les tests.
+                  <TabsContent value="prerequisites" className="mt-0">
+                    <ScrollArea className="h-[calc(100vh-340px)]">
+                      <div className="pr-4">
+                        <PrerequisitesSection
+                          prerequisites={selectedItem.prerequisites}
+                          onUpdate={handleUpdatePrerequisites}
+                        />
+                      </div>
+                    </ScrollArea>
+                  </TabsContent>
+
+                  <TabsContent value="requirements" className="mt-0">
+                    <div className="flex items-center justify-between mb-4">
+                      <p className="text-sm text-muted-foreground">
+                        {selectedItem.requirements.length}{' '}
+                        {selectedItem.requirements.length === 1 ? 'exigence' : 'exigences'}
                       </p>
-                      <Button size="sm" onClick={handleAddRequirement}>
+                      <Button onClick={handleAddRequirement}>
                         <Plus weight="bold" className="mr-1.5" />
-                        Ajouter la Première Exigence
+                        Ajouter Exigence
                       </Button>
                     </div>
-                  ) : (
-                    <div className="space-y-4 pr-4">
-                      {selectedItem.requirements.map((requirement) => (
-                        <RequirementCard
-                          key={requirement.id}
-                          requirement={requirement}
-                          onUpdate={(updated) => handleUpdateRequirement(requirement.id, updated)}
-                          onDelete={() => handleDeleteRequirement(requirement.id)}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </ScrollArea>
+
+                    <Separator className="mb-4" />
+
+                    <ScrollArea className="h-[calc(100vh-360px)]">
+                      {selectedItem.requirements.length === 0 ? (
+                        <div className="text-center py-12 px-4 border-2 border-dashed border-border rounded-lg">
+                          <p className="text-sm text-muted-foreground mb-4">
+                            Aucune exigence. Ajoutez votre première exigence pour commencer les tests.
+                          </p>
+                          <Button size="sm" onClick={handleAddRequirement}>
+                            <Plus weight="bold" className="mr-1.5" />
+                            Ajouter la Première Exigence
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="space-y-4 pr-4">
+                          {selectedItem.requirements.map((requirement) => (
+                            <RequirementCard
+                              key={requirement.id}
+                              requirement={requirement}
+                              onUpdate={(updated) => handleUpdateRequirement(requirement.id, updated)}
+                              onDelete={() => handleDeleteRequirement(requirement.id)}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </ScrollArea>
+                  </TabsContent>
+                </Tabs>
               </>
             ) : (
               <div className="flex items-center justify-center h-[calc(100vh-280px)] border-2 border-dashed border-border rounded-lg">
                 <div className="text-center px-4">
                   <p className="text-muted-foreground mb-2">
-                    Sélectionnez un article de test pour voir et gérer ses exigences
+                    Sélectionnez un article de test pour voir et gérer ses pré-requis et exigences
                   </p>
                   <p className="text-sm text-muted-foreground">
                     ou créez un nouvel article de test pour commencer
