@@ -1,43 +1,37 @@
-import { Alert, AlertTitle, AlertDescription } from "./components/ui/alert";
+import { Alert, AlertTitle, AlertDescription } from "./components/ui/alert"
+import { Button } from "./components/ui/button"
+import { WarningCircle } from "@phosphor-icons/react"
 
-
-  error: Error;
-
-export const ErrorFallback = (
-  error: Error;
-  resetErrorBoundary: () => void;
+interface ErrorFallbackProps {
+  error: Error
+  resetErrorBoundary: () => void
 }
 
 export const ErrorFallback = ({ error, resetErrorBoundary }: ErrorFallbackProps) => {
-  if (import.meta.env.DEV) throw error;
+  if (import.meta.env.DEV) throw error
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <Alert variant="destructive" className="mb-6">
-          <AlertTriangleIcon />
+          <WarningCircle className="h-4 w-4" />
           <AlertTitle>This spark has encountered a runtime error</AlertTitle>
           <AlertDescription>
             Something unexpected happened while running the application. The error details are shown below. Contact the spark author and let them know about this issue.
           </AlertDescription>
-          classN
+        </Alert>
         
         <div className="bg-card border rounded-lg p-4 mb-6">
           <h3 className="font-semibold text-sm text-muted-foreground mb-2">Error Details:</h3>
+          <pre className="text-xs text-foreground bg-muted p-3 rounded overflow-auto max-h-48">
+            {error.message}
+          </pre>
+        </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        <Button onClick={resetErrorBoundary} className="w-full">
+          Try Again
+        </Button>
+      </div>
+    </div>
+  )
+}
