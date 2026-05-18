@@ -48,7 +48,7 @@ export const TestItemCard = ({ item, isSelected, onClick, onDelete }: TestItemCa
       <CardContent className="pb-4">
         <div className="flex gap-2 flex-wrap">
           <Badge variant="secondary" className="text-xs">
-            {requirementCount} {requirementCount === 1 ? 'requirement' : 'requirements'}
+            {requirementCount} {requirementCount === 1 ? 'exigence' : 'exigences'}
           </Badge>
           {totalCriteria > 0 && (
             <Badge
@@ -59,7 +59,7 @@ export const TestItemCard = ({ item, isSelected, onClick, onDelete }: TestItemCa
                   : ''
               }
             >
-              {passedCriteria}/{totalCriteria} passed
+              {passedCriteria}/{totalCriteria} réussi
             </Badge>
           )}
         </div>

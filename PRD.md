@@ -1,126 +1,126 @@
-# Planning Guide
+# Guide de Planification
 
-A software test notebook application that allows quality assurance teams to document test procedures with rich media support, track pass/fail criteria via checkboxes, and export/import test data in JSON format.
+Une application de cahier d'essais logiciels qui permet aux équipes d'assurance qualité de documenter les procédures de test avec support multimédia enrichi, suivre les critères de réussite/échec via des cases à cocher, et exporter/importer les données de test en format JSON.
 
-**Experience Qualities**:
-1. **Efficient** - Quick data entry with keyboard shortcuts and inline image pasting for rapid test documentation
-2. **Visual** - Rich text support with embedded icons and screenshots to create clear, illustrative test procedures
-3. **Reliable** - Automatic persistence and JSON export/import to prevent data loss and enable sharing
+**Qualités d'Expérience**:
+1. **Efficace** - Saisie rapide avec raccourcis clavier et collage d'images en ligne pour une documentation de test rapide
+2. **Visuel** - Support de texte enrichi avec icônes et captures d'écran intégrées pour créer des procédures de test claires et illustratives
+3. **Fiable** - Persistance automatique et export/import JSON pour prévenir la perte de données et permettre le partage
 
-**Complexity Level**: Light Application (multiple features with basic state)
-- This is a focused test documentation tool with multiple interconnected features (test items, requirements, criteria, media handling) but remains a single-view application with straightforward CRUD operations and file I/O.
+**Niveau de Complexité**: Application Légère (multiples fonctionnalités avec état basique)
+- Ceci est un outil de documentation de test ciblé avec plusieurs fonctionnalités interconnectées (articles de test, exigences, critères, gestion des médias) mais reste une application à vue unique avec des opérations CRUD simples et E/S de fichiers.
 
-## Essential Features
+## Fonctionnalités Essentielles
 
-### Test Item Management
-- **Functionality**: Create, edit, and delete test items (end items) that represent software components or features being tested
-- **Purpose**: Organize tests by the specific software elements under evaluation
-- **Trigger**: Click "Add Test Item" button or use keyboard shortcut
-- **Progression**: Click add button → Enter item name → Item appears in list → Can be selected to view/edit requirements
-- **Success criteria**: Users can create multiple test items, switch between them, and each maintains its own set of requirements
+### Gestion des Articles de Test
+- **Fonctionnalité**: Créer, éditer et supprimer des articles de test (end items) qui représentent les composants ou fonctionnalités logicielles testées
+- **But**: Organiser les tests par les éléments logiciels spécifiques en évaluation
+- **Déclencheur**: Cliquer sur le bouton "Ajouter un Article de Test" ou utiliser le raccourci clavier
+- **Progression**: Clic sur ajouter → Saisir le nom de l'article → L'article apparaît dans la liste → Peut être sélectionné pour voir/éditer les exigences
+- **Critères de succès**: Les utilisateurs peuvent créer plusieurs articles de test, basculer entre eux, et chacun maintient son propre ensemble d'exigences
 
-### Requirement Entry with Rich Media
-- **Functionality**: Add test requirements with embedded images (icons, screenshots) and formatted text describing test steps
-- **Purpose**: Create clear, visual test procedures that are easy to follow
-- **Trigger**: Click "Add Requirement" within a test item
-- **Progression**: Click add → Enter requirement text → Paste or upload images inline → Images appear embedded in text → Requirement saved
-- **Success criteria**: Users can paste screenshots directly, upload small icons, and see images rendered inline with text; images are preserved in JSON export
+### Saisie d'Exigences avec Médias Enrichis
+- **Fonctionnalité**: Ajouter des exigences de test avec images intégrées (icônes, captures d'écran) et texte formaté décrivant les étapes de test
+- **But**: Créer des procédures de test claires et visuelles faciles à suivre
+- **Déclencheur**: Cliquer sur "Ajouter Exigence" dans un article de test
+- **Progression**: Clic sur ajouter → Saisir le texte de l'exigence → Coller ou télécharger des images en ligne → Les images apparaissent intégrées dans le texte → Exigence sauvegardée
+- **Critères de succès**: Les utilisateurs peuvent coller des captures d'écran directement, télécharger de petites icônes, et voir les images rendues en ligne avec le texte; les images sont préservées dans l'export JSON
 
-### Pass/Fail Criteria Tracking
-- **Functionality**: Define multiple pass/fail criteria as checkboxes for each requirement
-- **Purpose**: Track which validation points have been completed during testing
-- **Trigger**: Add criteria to a requirement
-- **Progression**: Click "Add Criterion" → Enter criterion text → Checkbox appears → Click to toggle pass/fail → State persists
-- **Success criteria**: Each requirement can have multiple checkboxes that maintain their state and are included in exports
+### Suivi des Critères de Réussite/Échec
+- **Fonctionnalité**: Définir plusieurs critères de réussite/échec sous forme de cases à cocher pour chaque exigence
+- **But**: Suivre quels points de validation ont été complétés pendant les tests
+- **Déclencheur**: Ajouter des critères à une exigence
+- **Progression**: Clic sur "Ajouter Critère" → Saisir le texte du critère → La case à cocher apparaît → Cliquer pour basculer réussite/échec → L'état persiste
+- **Critères de succès**: Chaque exigence peut avoir plusieurs cases à cocher qui maintiennent leur état et sont incluses dans les exports
 
-### JSON Export/Import
-- **Functionality**: Save all test data (items, requirements, criteria, images) to a JSON file and reload previously saved tests
-- **Purpose**: Enable data persistence, backup, and sharing of test notebooks between team members
-- **Trigger**: Click "Export JSON" or "Import JSON" buttons
-- **Progression**: Export: Click button → Browser downloads JSON file with all data | Import: Click button → Select file → All data loads into application
-- **Success criteria**: Exported JSON contains all text, checkbox states, and base64-encoded images; imported files fully restore application state
+### Export/Import JSON
+- **Fonctionnalité**: Sauvegarder toutes les données de test (articles, exigences, critères, images) dans un fichier JSON et recharger des tests sauvegardés précédemment
+- **But**: Permettre la persistance des données, la sauvegarde et le partage de cahiers d'essais entre membres d'équipe
+- **Déclencheur**: Cliquer sur les boutons "Exporter JSON" ou "Importer JSON"
+- **Progression**: Export: Clic sur bouton → Le navigateur télécharge le fichier JSON avec toutes les données | Import: Clic sur bouton → Sélectionner le fichier → Toutes les données se chargent dans l'application
+- **Critères de succès**: Le JSON exporté contient tout le texte, les états des cases à cocher et les images encodées en base64; les fichiers importés restaurent complètement l'état de l'application
 
-## Edge Case Handling
-- **Empty States**: Show helpful prompts when no test items or requirements exist
-- **Large Images**: Display warning if pasted image exceeds 2MB; suggest optimization
-- **Invalid JSON Import**: Show error message with specific issue (malformed JSON, wrong schema)
-- **Unsaved Changes**: Persist data to localStorage automatically to prevent loss on accidental closure
-- **Long Requirement Text**: Auto-expand text areas and maintain readability with proper wrapping
+## Gestion des Cas Limites
+- **États Vides**: Afficher des invites utiles quand aucun article de test ou exigence n'existe
+- **Images Volumineuses**: Afficher un avertissement si l'image collée dépasse 2Mo; suggérer une optimisation
+- **Import JSON Invalide**: Afficher un message d'erreur avec le problème spécifique (JSON malformé, mauvais schéma)
+- **Changements Non Sauvegardés**: Persister les données dans localStorage automatiquement pour prévenir la perte lors d'une fermeture accidentelle
+- **Texte d'Exigence Long**: Auto-expansion des zones de texte et maintien de la lisibilité avec un retour à la ligne approprié
 
-## Design Direction
-The design should evoke a professional laboratory notebook feeling - clean, organized, and trustworthy like scientific documentation, with subtle technical sophistication through precision typography and a structured layout.
+## Direction de Design
+Le design devrait évoquer un sentiment de cahier de laboratoire professionnel - propre, organisé et digne de confiance comme une documentation scientifique, avec une sophistication technique subtile à travers une typographie de précision et une mise en page structurée.
 
-## Color Selection
+## Sélection de Couleurs
 
-- **Primary Color**: Deep Technical Blue `oklch(0.45 0.15 250)` - Communicates precision, reliability, and technical expertise
-- **Secondary Colors**: 
-  - Neutral Slate `oklch(0.96 0.005 250)` for backgrounds - Creates a clean workspace
-  - Charcoal `oklch(0.30 0.01 250)` for text - Professional and readable
-- **Accent Color**: Success Green `oklch(0.65 0.18 145)` for checkboxes and positive actions - Clear visual feedback for passed tests
-- **Foreground/Background Pairings**: 
-  - Primary Blue (oklch(0.45 0.15 250)): White text (oklch(0.99 0 0)) - Ratio 8.2:1 ✓
-  - Neutral Background (oklch(0.96 0.005 250)): Charcoal text (oklch(0.30 0.01 250)) - Ratio 11.5:1 ✓
-  - Accent Green (oklch(0.65 0.18 145)): White text (oklch(0.99 0 0)) - Ratio 5.8:1 ✓
+- **Couleur Primaire**: Bleu Technique Profond `oklch(0.45 0.15 250)` - Communique la précision, la fiabilité et l'expertise technique
+- **Couleurs Secondaires**: 
+  - Ardoise Neutre `oklch(0.96 0.005 250)` pour les arrière-plans - Crée un espace de travail propre
+  - Charbon `oklch(0.30 0.01 250)` pour le texte - Professionnel et lisible
+- **Couleur d'Accent**: Vert de Succès `oklch(0.65 0.18 145)` pour les cases à cocher et actions positives - Retour visuel clair pour les tests réussis
+- **Paires Premier Plan/Arrière-Plan**: 
+  - Bleu Primaire (oklch(0.45 0.15 250)): Texte blanc (oklch(0.99 0 0)) - Ratio 8.2:1 ✓
+  - Arrière-plan Neutre (oklch(0.96 0.005 250)): Texte charbon (oklch(0.30 0.01 250)) - Ratio 11.5:1 ✓
+  - Vert d'Accent (oklch(0.65 0.18 145)): Texte blanc (oklch(0.99 0 0)) - Ratio 5.8:1 ✓
 
-## Font Selection
-Typefaces should balance technical precision with excellent readability for documentation work - a technical sans-serif for UI elements paired with a highly legible monospace for test data.
+## Sélection de Police
+Les polices devraient équilibrer la précision technique avec une excellente lisibilité pour le travail de documentation - une sans-serif technique pour les éléments d'interface couplée avec une monospace très lisible pour les données de test.
 
-- **Typographic Hierarchy**:
-  - H1 (App Title): Space Grotesk Bold / 32px / -0.02em letter spacing
-  - H2 (Test Item Names): Space Grotesk SemiBold / 24px / -0.01em
-  - H3 (Requirement Headers): Space Grotesk Medium / 18px / normal
-  - Body (General UI): Inter Regular / 15px / normal / 1.6 line height
-  - Monospace (IDs, JSON): JetBrains Mono Regular / 14px / 0.5ch letter spacing
+- **Hiérarchie Typographique**:
+  - H1 (Titre de l'App): Space Grotesk Bold / 32px / -0.02em espacement des lettres
+  - H2 (Noms des Articles de Test): Space Grotesk SemiBold / 24px / -0.01em
+  - H3 (En-têtes d'Exigences): Space Grotesk Medium / 18px / normal
+  - Corps (Interface Générale): Inter Regular / 15px / normal / 1.6 hauteur de ligne
+  - Monospace (IDs, JSON): JetBrains Mono Regular / 14px / 0.5ch espacement des lettres
 
 ## Animations
-Animations should feel precise and technical, with quick, purposeful transitions that emphasize the structured nature of test documentation - smooth expansions for adding items, subtle checkbox confirmations, and quick fade-ins for new content.
+Les animations devraient paraître précises et techniques, avec des transitions rapides et ciblées qui soulignent la nature structurée de la documentation de test - expansions fluides pour l'ajout d'articles, confirmations subtiles de cases à cocher, et fondus rapides pour le nouveau contenu.
 
-## Component Selection
+## Sélection de Composants
 
-- **Components**:
-  - `Card` with subtle shadows for test items - organized, contained sections
-  - `Accordion` for collapsible requirements - efficient space usage
-  - `Checkbox` for pass/fail criteria - clear, accessible interaction
-  - `Button` variants (default for primary actions, outline for secondary) - clear action hierarchy
-  - `Textarea` auto-resizing for requirement text - flexible input
-  - `Input` for test item names and criterion labels
-  - `Dialog` for JSON import and confirmation actions
-  - `Badge` to show requirement counts and status
-  - `Separator` to divide sections
-  - `ScrollArea` for long lists of requirements
+- **Composants**:
+  - `Card` avec ombres subtiles pour les articles de test - sections organisées et contenues
+  - `Accordion` pour les exigences repliables - utilisation efficace de l'espace
+  - `Checkbox` pour les critères de réussite/échec - interaction claire et accessible
+  - `Button` variantes (défaut pour actions primaires, outline pour secondaires) - hiérarchie d'action claire
+  - `Textarea` auto-redimensionnable pour le texte d'exigence - saisie flexible
+  - `Input` pour les noms d'articles de test et les libellés de critères
+  - `Dialog` pour l'import JSON et les actions de confirmation
+  - `Badge` pour afficher les comptes et statuts d'exigences
+  - `Separator` pour diviser les sections
+  - `ScrollArea` pour les longues listes d'exigences
   
-- **Customizations**:
-  - Custom image upload/paste component with preview and inline rendering
-  - Custom JSON viewer for debugging exports
-  - Rich text editor component with image embedding capability
-  - Drag-and-drop reordering for requirements
+- **Personnalisations**:
+  - Composant personnalisé de téléchargement/collage d'image avec prévisualisation et rendu en ligne
+  - Visualiseur JSON personnalisé pour déboguer les exports
+  - Composant d'éditeur de texte enrichi avec capacité d'intégration d'images
+  - Réorganisation par glisser-déposer pour les exigences
   
-- **States**:
-  - Buttons: Subtle scale-down on press, color shift on hover
-  - Checkboxes: Smooth checkmark animation with green highlight
-  - Cards: Elevated shadow on hover for test items, border highlight when selected
-  - Inputs: Focused state with blue ring and subtle background shift
+- **États**:
+  - Boutons: Réduction d'échelle subtile à la pression, changement de couleur au survol
+  - Cases à cocher: Animation fluide de coche avec surbrillance verte
+  - Cartes: Ombre élevée au survol pour les articles de test, surbrillance de bordure quand sélectionné
+  - Champs: État focalisé avec anneau bleu et changement d'arrière-plan subtil
   
-- **Icon Selection**:
-  - `Plus` for adding items/requirements/criteria
-  - `Trash` for deletion actions
-  - `Image` for image upload triggers
-  - `DownloadSimple` for JSON export
-  - `UploadSimple` for JSON import
-  - `FloppyDisk` for save indicators
-  - `Check` for completed criteria
-  - `ClipboardText` for test items
+- **Sélection d'Icônes**:
+  - `Plus` pour ajouter des articles/exigences/critères
+  - `Trash` pour les actions de suppression
+  - `Image` pour les déclencheurs de téléchargement d'image
+  - `DownloadSimple` pour l'export JSON
+  - `UploadSimple` pour l'import JSON
+  - `FloppyDisk` pour les indicateurs de sauvegarde
+  - `Check` pour les critères complétés
+  - `ClipboardText` pour les articles de test
   
-- **Spacing**: 
-  - Container padding: `p-6`
-  - Card padding: `p-4`
-  - Section gaps: `gap-6`
-  - List item gaps: `gap-3`
-  - Inline spacing: `gap-2`
+- **Espacement**: 
+  - Padding du conteneur: `p-6`
+  - Padding de carte: `p-4`
+  - Écarts de section: `gap-6`
+  - Écarts d'éléments de liste: `gap-3`
+  - Espacement en ligne: `gap-2`
   
 - **Mobile**: 
-  - Stack test items vertically on mobile
-  - Full-width cards below 768px
-  - Floating action button for "Add" on mobile
-  - Side-by-side buttons become stacked
-  - Reduced padding (p-4 instead of p-6)
+  - Empiler les articles de test verticalement sur mobile
+  - Cartes pleine largeur sous 768px
+  - Bouton d'action flottant pour "Ajouter" sur mobile
+  - Les boutons côte à côte deviennent empilés
+  - Padding réduit (p-4 au lieu de p-6)

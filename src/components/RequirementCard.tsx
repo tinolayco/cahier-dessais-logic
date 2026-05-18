@@ -75,7 +75,7 @@ export const RequirementCard = ({ requirement, onUpdate, onDelete }: Requirement
               onChange={(e) =>
                 onUpdate({ ...requirement, content: e.target.value })
               }
-              placeholder="Describe the test requirement (e.g., Press the button <image> and verify...)"
+              placeholder="Décrivez l'exigence de test (ex: Appuyez sur le bouton <image> et vérifiez...)"
               className="min-h-[80px] text-sm resize-none"
             />
           </div>
@@ -95,7 +95,7 @@ export const RequirementCard = ({ requirement, onUpdate, onDelete }: Requirement
           <div className="flex items-center gap-2 mb-2">
             <ImageUpload onImageAdd={handleAddImage} />
             <span className="text-xs text-muted-foreground">
-              Upload, paste, or drag images (max 2MB)
+              Télécharger, coller ou glisser des images (max 2Mo)
             </span>
           </div>
           {requirement.images.length > 0 && (
@@ -114,7 +114,7 @@ export const RequirementCard = ({ requirement, onUpdate, onDelete }: Requirement
         <Separator />
 
         <div>
-          <h4 className="text-sm font-semibold mb-2">Pass/Fail Criteria</h4>
+          <h4 className="text-sm font-semibold mb-2">Critères de Réussite/Échec</h4>
           <div className="space-y-2">
             {requirement.criteria.map((criterion) => (
               <div
@@ -157,7 +157,7 @@ export const RequirementCard = ({ requirement, onUpdate, onDelete }: Requirement
                   handleAddCriterion()
                 }
               }}
-              placeholder="Add a pass/fail criterion..."
+              placeholder="Ajouter un critère de réussite/échec..."
               className="flex-1 text-sm"
             />
             <Button

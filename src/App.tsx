@@ -32,7 +32,7 @@ function App() {
 
   const handleAddTestItem = () => {
     if (!newItemName.trim()) {
-      toast.error('Please enter a test item name')
+      toast.error('Veuillez entrer un nom d\'article de test')
       return
     }
 
@@ -47,7 +47,7 @@ function App() {
     setSelectedItemId(newItem.id)
     setNewItemName('')
     setIsAddDialogOpen(false)
-    toast.success('Test item created')
+    toast.success('Article de test créé')
   }
 
   const handleDeleteTestItem = (itemId: string) => {
@@ -55,7 +55,7 @@ function App() {
     if (selectedItemId === itemId) {
       setSelectedItemId(null)
     }
-    toast.success('Test item deleted')
+    toast.success('Article de test supprimé')
   }
 
   const handleAddRequirement = () => {
@@ -76,7 +76,7 @@ function App() {
           : item
       )
     )
-    toast.success('Requirement added')
+    toast.success('Exigence ajoutée')
   }
 
   const handleUpdateRequirement = (requirementId: string, updated: TestRequirement) => {
@@ -109,12 +109,12 @@ function App() {
           : item
       )
     )
-    toast.success('Requirement deleted')
+    toast.success('Exigence supprimée')
   }
 
   const handleExport = () => {
     exportNotebook(items)
-    toast.success('Test notebook exported')
+    toast.success('Cahier d\'essais exporté')
   }
 
   const handleImportClick = () => {
@@ -129,9 +129,9 @@ function App() {
       const notebook = await importNotebook(file)
       setTestItems(notebook.items)
       setSelectedItemId(null)
-      toast.success('Test notebook imported successfully')
+      toast.success('Cahier d\'essais importé avec succès')
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to import')
+      toast.error(error instanceof Error ? error.message : 'Échec de l\'importation')
     }
 
     if (fileInputRef.current) {
@@ -148,10 +148,10 @@ function App() {
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-1">
-                Test Notebook
+                Cahier d'Essais
               </h1>
               <p className="text-muted-foreground">
-                Software QA Documentation & Test Tracking
+                Documentation QA Logiciel & Suivi des Tests
               </p>
             </div>
             <div className="flex gap-2">
@@ -164,11 +164,11 @@ function App() {
               />
               <Button variant="outline" onClick={handleImportClick}>
                 <UploadSimple className="mr-1.5" weight="duotone" />
-                Import
+                Importer
               </Button>
               <Button variant="outline" onClick={handleExport} disabled={items.length === 0}>
                 <DownloadSimple className="mr-1.5" weight="duotone" />
-                Export
+                Exporter
               </Button>
             </div>
           </div>
@@ -177,24 +177,24 @@ function App() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-1">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold">Test Items</h2>
+              <h2 className="text-xl font-semibold">Articles de Test</h2>
               <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
                 <DialogTrigger asChild>
                   <Button size="sm">
                     <Plus weight="bold" className="mr-1.5" />
-                    Add Item
+                    Ajouter
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Add Test Item</DialogTitle>
+                    <DialogTitle>Ajouter un Article de Test</DialogTitle>
                     <DialogDescription>
-                      Create a new test item (end item) to organize your test requirements.
+                      Créez un nouvel article de test (end item) pour organiser vos exigences de test.
                     </DialogDescription>
                   </DialogHeader>
                   <div className="py-4">
                     <Input
-                      placeholder="e.g., Login Module, Navigation Bar, Checkout Flow"
+                      placeholder="ex: Module de Connexion, Barre de Navigation, Processus de Paiement"
                       value={newItemName}
                       onChange={(e) => setNewItemName(e.target.value)}
                       onKeyDown={(e) => {
@@ -205,7 +205,7 @@ function App() {
                     />
                   </div>
                   <DialogFooter>
-                    <Button onClick={handleAddTestItem}>Create</Button>
+                    <Button onClick={handleAddTestItem}>Créer</Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
@@ -216,11 +216,11 @@ function App() {
                 <div className="text-center py-12 px-4 border-2 border-dashed border-border rounded-lg">
                   <FloppyDisk size={48} className="mx-auto mb-3 text-muted-foreground" weight="duotone" />
                   <p className="text-sm text-muted-foreground mb-4">
-                    No test items yet. Create your first test item to begin documenting.
+                    Aucun article de test. Créez votre premier article pour commencer la documentation.
                   </p>
                   <Button size="sm" onClick={() => setIsAddDialogOpen(true)}>
                     <Plus weight="bold" className="mr-1.5" />
-                    Create First Item
+                    Créer le Premier Article
                   </Button>
                 </div>
               ) : (
@@ -247,12 +247,12 @@ function App() {
                     <h2 className="text-xl font-semibold">{selectedItem.name}</h2>
                     <p className="text-sm text-muted-foreground">
                       {selectedItem.requirements.length}{' '}
-                      {selectedItem.requirements.length === 1 ? 'requirement' : 'requirements'}
+                      {selectedItem.requirements.length === 1 ? 'exigence' : 'exigences'}
                     </p>
                   </div>
                   <Button onClick={handleAddRequirement}>
                     <Plus weight="bold" className="mr-1.5" />
-                    Add Requirement
+                    Ajouter Exigence
                   </Button>
                 </div>
 
@@ -262,11 +262,11 @@ function App() {
                   {selectedItem.requirements.length === 0 ? (
                     <div className="text-center py-12 px-4 border-2 border-dashed border-border rounded-lg">
                       <p className="text-sm text-muted-foreground mb-4">
-                        No requirements yet. Add your first requirement to start testing.
+                        Aucune exigence. Ajoutez votre première exigence pour commencer les tests.
                       </p>
                       <Button size="sm" onClick={handleAddRequirement}>
                         <Plus weight="bold" className="mr-1.5" />
-                        Add First Requirement
+                        Ajouter la Première Exigence
                       </Button>
                     </div>
                   ) : (
@@ -287,10 +287,10 @@ function App() {
               <div className="flex items-center justify-center h-[calc(100vh-280px)] border-2 border-dashed border-border rounded-lg">
                 <div className="text-center px-4">
                   <p className="text-muted-foreground mb-2">
-                    Select a test item to view and manage its requirements
+                    Sélectionnez un article de test pour voir et gérer ses exigences
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    or create a new test item to get started
+                    ou créez un nouvel article de test pour commencer
                   </p>
                 </div>
               </div>
