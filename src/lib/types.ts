@@ -2,6 +2,7 @@ export interface TestCriterion {
   id: string
   text: string
   checked: boolean
+  images: string[]
 }
 
 export interface TestRequirement {

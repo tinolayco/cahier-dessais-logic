@@ -4,9 +4,10 @@ import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Separator } from '@/components/ui/separator'
-import { Trash, Plus } from '@phosphor-icons/react'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { Trash, Plus, CaretDown, CaretRight } from '@phosphor-icons/react'
 import { ImageUpload, ImagePreview } from './ImageUpload'
-import type { TestRequirement } from '@/lib/types'
+import type { TestRequirement, TestCriterion } from '@/lib/types'
 import { useState } from 'react'
 
 interface RequirementCardProps {
@@ -17,6 +18,7 @@ interface RequirementCardProps {
 
 export const RequirementCard = ({ requirement, onUpdate, onDelete }: RequirementCardProps) => {
   const [newCriterionText, setNewCriterionText] = useState('')
+  const [expandedCriteria, setExpandedCriteria] = useState<Set<string>>(new Set())
 
   const criteria = Array.isArray(requirement.criteria) ? requirement.criteria : []
   const images = Array.isArray(requirement.images) ? requirement.images : []
@@ -31,7 +33,8 @@ export const RequirementCard = ({ requirement, onUpdate, onDelete }: Requirement
         {
           id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           text: newCriterionText,
-          checked: false
+          checked: false,
+          images: []
         }
       ]
     })
@@ -65,6 +68,40 @@ export const RequirementCard = ({ requirement, onUpdate, onDelete }: Requirement
     onUpdate({
       ...requirement,
       images: images.filter((_, i) => i !== index)
+    })
+  }
+
+  const handleAddCriterionImage = (criterionId: string, base64: string) => {
+    onUpdate({
+      ...requirement,
+      criteria: criteria.map((c) =>
+        c.id === criterionId
+          ? { ...c, images: [...(c.images || []), base64] }
+          : c
+      )
+    })
+  }
+
+  const handleRemoveCriterionImage = (criterionId: string, imageIndex: number) => {
+    onUpdate({
+      ...requirement,
+      criteria: criteria.map((c) =>
+        c.id === criterionId
+          ? { ...c, images: (c.images || []).filter((_, i) => i !== imageIndex) }
+          : c
+      )
+    })
+  }
+
+  const toggleCriterionExpanded = (criterionId: string) => {
+    setExpandedCriteria(prev => {
+      const next = new Set(prev)
+      if (next.has(criterionId)) {
+        next.delete(criterionId)
+      } else {
+        next.add(criterionId)
+      }
+      return next
     })
   }
 
@@ -119,35 +156,82 @@ export const RequirementCard = ({ requirement, onUpdate, onDelete }: Requirement
         <div>
           <h4 className="text-sm font-semibold mb-2">Critères de Réussite/Échec</h4>
           <div className="space-y-2">
-            {criteria.map((criterion) => (
-              <div
-                key={criterion.id}
-                className="flex items-center gap-2 p-2 rounded hover:bg-muted/50 transition-colors group"
-              >
-                <Checkbox
-                  id={criterion.id}
-                  checked={criterion.checked}
-                  onCheckedChange={() => handleToggleCriterion(criterion.id)}
-                  className="flex-shrink-0"
-                />
-                <label
-                  htmlFor={criterion.id}
-                  className={`flex-1 text-sm cursor-pointer ${
-                    criterion.checked ? 'line-through text-muted-foreground' : ''
-                  }`}
+            {criteria.map((criterion) => {
+              const isExpanded = expandedCriteria.has(criterion.id)
+              const criterionImages = criterion.images || []
+              
+              return (
+                <Collapsible
+                  key={criterion.id}
+                  open={isExpanded}
+                  onOpenChange={() => toggleCriterionExpanded(criterion.id)}
                 >
-                  {criterion.text}
-                </label>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                  onClick={() => handleDeleteCriterion(criterion.id)}
-                >
-                  <Trash size={14} />
-                </Button>
-              </div>
-            ))}
+                  <div className="rounded border border-border bg-card">
+                    <div className="flex items-center gap-2 p-2 hover:bg-muted/50 transition-colors group">
+                      <Checkbox
+                        id={criterion.id}
+                        checked={criterion.checked}
+                        onCheckedChange={() => handleToggleCriterion(criterion.id)}
+                        className="flex-shrink-0"
+                      />
+                      <label
+                        htmlFor={criterion.id}
+                        className={`flex-1 text-sm cursor-pointer ${
+                          criterion.checked ? 'line-through text-muted-foreground' : ''
+                        }`}
+                      >
+                        {criterion.text}
+                      </label>
+                      <CollapsibleTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 w-6 p-0"
+                          type="button"
+                        >
+                          {isExpanded ? (
+                            <CaretDown size={16} weight="bold" />
+                          ) : (
+                            <CaretRight size={16} weight="bold" />
+                          )}
+                        </Button>
+                      </CollapsibleTrigger>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => handleDeleteCriterion(criterion.id)}
+                        type="button"
+                      >
+                        <Trash size={14} />
+                      </Button>
+                    </div>
+                    
+                    <CollapsibleContent>
+                      <div className="p-3 border-t border-border bg-muted/30">
+                        <p className="text-xs font-medium text-muted-foreground mb-2">
+                          Images de résultat pour ce critère
+                        </p>
+                        <ImageUpload
+                          onImageAdd={(base64) => handleAddCriterionImage(criterion.id, base64)}
+                        />
+                        {criterionImages.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            {criterionImages.map((img, imgIndex) => (
+                              <ImagePreview
+                                key={imgIndex}
+                                src={img}
+                                onRemove={() => handleRemoveCriterionImage(criterion.id, imgIndex)}
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </CollapsibleContent>
+                  </div>
+                </Collapsible>
+              )
+            })}
           </div>
 
           <div className="flex gap-2 mt-3">
@@ -167,6 +251,7 @@ export const RequirementCard = ({ requirement, onUpdate, onDelete }: Requirement
               onClick={handleAddCriterion}
               size="sm"
               disabled={!newCriterionText.trim()}
+              type="button"
             >
               <Plus weight="bold" />
             </Button>
