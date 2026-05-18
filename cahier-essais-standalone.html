@@ -345,6 +345,48 @@
             background: #f5f3ff;
         }
 
+        .image-upload-row {
+            display: flex;
+            gap: 8px;
+            align-items: stretch;
+            margin-top: 8px;
+        }
+
+        .image-upload-row .btn-file {
+            flex: 0 0 auto;
+            white-space: nowrap;
+        }
+
+        .paste-zone {
+            flex: 1;
+            border: 2px dashed #d4d4dd;
+            border-radius: 6px;
+            padding: 10px 12px;
+            text-align: center;
+            font-size: 13px;
+            color: #6b6b78;
+            cursor: text;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .paste-zone:hover {
+            border-color: #b8aee8;
+        }
+
+        .paste-zone:focus,
+        .paste-zone.focused {
+            border-color: #5e4db8;
+            background: #f5f3ff;
+            color: #5e4db8;
+            box-shadow: 0 0 0 3px rgba(94, 77, 184, 0.15);
+        }
+
+        .paste-zone.drag-over {
+            border-color: #5e4db8;
+            background: #f5f3ff;
+        }
+
         .criteria-list {
             margin-top: 12px;
         }
@@ -816,12 +858,16 @@
         }
 
         function handlePrerequisitePaste(prereqId, event) {
+            if (!event.clipboardData) return;
             const items = event.clipboardData.items;
-            
+            if (!items) return;
+
             for (let i = 0; i < items.length; i++) {
                 if (items[i].type.indexOf('image') !== -1) {
+                    event.preventDefault();
                     const blob = items[i].getAsFile();
-                    handlePrerequisiteImageUpload(prereqId, [blob]);
+                    if (blob) handlePrerequisiteImageUpload(prereqId, [blob]);
+                    return;
                 }
             }
         }
@@ -870,8 +916,18 @@
                     
                     <div class="images-section">
                         <label class="section-header">Images (max 2Mo par image)</label>
-                        <div class="image-upload-zone" onclick="document.getElementById('prereq-file-${prereq.id}').click()">
-                            📸 Cliquez pour ajouter une image ou collez (Ctrl+V) dans la zone de texte
+                        <div class="image-upload-row">
+                            <button type="button" class="btn btn-secondary btn-sm btn-file" onclick="document.getElementById('prereq-file-${prereq.id}').click()">📁 Fichier</button>
+                            <div class="paste-zone" tabindex="0"
+                                onpaste="handlePrerequisitePaste('${prereq.id}', event)"
+                                onfocus="this.classList.add('focused')"
+                                onblur="this.classList.remove('focused')"
+                                ondragover="event.preventDefault(); this.classList.add('drag-over')"
+                                ondragleave="this.classList.remove('drag-over')"
+                                ondrop="event.preventDefault(); this.classList.remove('drag-over'); handlePrerequisiteImageUpload('${prereq.id}', event.dataTransfer.files)"
+                                title="Cliquez ici puis Ctrl+V pour coller une image">
+                                📋 Cliquez ici, puis Ctrl+V pour coller une image
+                            </div>
                         </div>
                         <input type="file" id="prereq-file-${prereq.id}" accept="image/*" multiple style="display: none;" onchange="handlePrerequisiteImageUpload('${prereq.id}', this.files)">
                         
@@ -949,12 +1005,16 @@
         }
 
         function handleRequirementPaste(reqId, event) {
+            if (!event.clipboardData) return;
             const items = event.clipboardData.items;
-            
+            if (!items) return;
+
             for (let i = 0; i < items.length; i++) {
                 if (items[i].type.indexOf('image') !== -1) {
+                    event.preventDefault();
                     const blob = items[i].getAsFile();
-                    handleRequirementImageUpload(reqId, [blob]);
+                    if (blob) handleRequirementImageUpload(reqId, [blob]);
+                    return;
                 }
             }
         }
@@ -1057,8 +1117,18 @@
                     
                     <div class="images-section">
                         <label class="section-header">Images (max 2Mo par image)</label>
-                        <div class="image-upload-zone" onclick="document.getElementById('req-file-${req.id}').click()">
-                            📸 Cliquez pour ajouter une image ou collez (Ctrl+V) dans la zone de texte
+                        <div class="image-upload-row">
+                            <button type="button" class="btn btn-secondary btn-sm btn-file" onclick="document.getElementById('req-file-${req.id}').click()">📁 Fichier</button>
+                            <div class="paste-zone" tabindex="0"
+                                onpaste="handleRequirementPaste('${req.id}', event)"
+                                onfocus="this.classList.add('focused')"
+                                onblur="this.classList.remove('focused')"
+                                ondragover="event.preventDefault(); this.classList.add('drag-over')"
+                                ondragleave="this.classList.remove('drag-over')"
+                                ondrop="event.preventDefault(); this.classList.remove('drag-over'); handleRequirementImageUpload('${req.id}', event.dataTransfer.files)"
+                                title="Cliquez ici puis Ctrl+V pour coller une image">
+                                📋 Cliquez ici, puis Ctrl+V pour coller une image
+                            </div>
                         </div>
                         <input type="file" id="req-file-${req.id}" accept="image/*" multiple style="display: none;" onchange="handleRequirementImageUpload('${req.id}', this.files)">
                         
