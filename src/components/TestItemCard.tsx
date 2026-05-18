@@ -12,10 +12,17 @@ interface TestItemCardProps {
 }
 
 export const TestItemCard = ({ item, isSelected, onClick, onDelete }: TestItemCardProps) => {
-  const requirementCount = item.requirements.length
-  const totalCriteria = item.requirements.reduce((acc, req) => acc + req.criteria.length, 0)
-  const passedCriteria = item.requirements.reduce(
-    (acc, req) => acc + req.criteria.filter((c) => c.checked).length,
+  const requirements = Array.isArray(item.requirements) ? item.requirements : []
+  const requirementCount = requirements.length
+  const totalCriteria = requirements.reduce((acc, req) => {
+    const criteria = Array.isArray(req.criteria) ? req.criteria : []
+    return acc + criteria.length
+  }, 0)
+  const passedCriteria = requirements.reduce(
+    (acc, req) => {
+      const criteria = Array.isArray(req.criteria) ? req.criteria : []
+      return acc + criteria.filter((c) => c.checked).length
+    },
     0
   )
 

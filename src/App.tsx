@@ -30,7 +30,7 @@ function App() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const items = Array.isArray(testItems) ? testItems : []
-  const selectedItem = items.find((item) => item.id === selectedItemId)
+  const selectedItem = items.find((item) => item.id === selectedItemId) || null
 
   const handleAddTestItem = () => {
     if (!newItemName.trim()) {

@@ -12,6 +12,8 @@ interface PrerequisitesSectionProps {
 }
 
 export const PrerequisitesSection = ({ prerequisites, onUpdate }: PrerequisitesSectionProps) => {
+  const prereqs = Array.isArray(prerequisites) ? prerequisites : []
+
   const handleAddPrerequisite = () => {
     const newPrerequisite: Prerequisite = {
       id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -19,30 +21,30 @@ export const PrerequisitesSection = ({ prerequisites, onUpdate }: PrerequisitesS
       images: [],
       createdAt: Date.now()
     }
-    onUpdate([...prerequisites, newPrerequisite])
+    onUpdate([...prereqs, newPrerequisite])
   }
 
   const handleUpdatePrerequisite = (id: string, updated: Prerequisite) => {
-    onUpdate(prerequisites.map((p) => (p.id === id ? updated : p)))
+    onUpdate(prereqs.map((p) => (p.id === id ? updated : p)))
   }
 
   const handleDeletePrerequisite = (id: string) => {
-    onUpdate(prerequisites.filter((p) => p.id !== id))
+    onUpdate(prereqs.filter((p) => p.id !== id))
   }
 
   const handleAddImage = (prerequisiteId: string, base64: string) => {
     onUpdate(
-      prerequisites.map((p) =>
-        p.id === prerequisiteId ? { ...p, images: [...p.images, base64] } : p
+      prereqs.map((p) =>
+        p.id === prerequisiteId ? { ...p, images: [...(Array.isArray(p.images) ? p.images : []), base64] } : p
       )
     )
   }
 
   const handleRemoveImage = (prerequisiteId: string, imageIndex: number) => {
     onUpdate(
-      prerequisites.map((p) =>
+      prereqs.map((p) =>
         p.id === prerequisiteId
-          ? { ...p, images: p.images.filter((_, i) => i !== imageIndex) }
+          ? { ...p, images: (Array.isArray(p.images) ? p.images : []).filter((_, i) => i !== imageIndex) }
           : p
       )
     )
@@ -61,7 +63,7 @@ export const PrerequisitesSection = ({ prerequisites, onUpdate }: PrerequisitesS
         </Button>
       </div>
 
-      {prerequisites.length === 0 ? (
+      {prereqs.length === 0 ? (
         <Card className="border-dashed">
           <CardContent className="py-8 text-center">
             <p className="text-sm text-muted-foreground mb-3">
@@ -75,7 +77,7 @@ export const PrerequisitesSection = ({ prerequisites, onUpdate }: PrerequisitesS
         </Card>
       ) : (
         <div className="space-y-3">
-          {prerequisites.map((prereq) => (
+          {prereqs.map((prereq) => (
             <Card key={prereq.id} className="border-l-4 border-l-accent">
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between gap-2">
@@ -112,7 +114,7 @@ export const PrerequisitesSection = ({ prerequisites, onUpdate }: PrerequisitesS
                       Télécharger, coller ou glisser des images (max 2Mo)
                     </span>
                   </div>
-                  {prereq.images.length > 0 && (
+                  {Array.isArray(prereq.images) && prereq.images.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-2">
                       {prereq.images.map((img, index) => (
                         <ImagePreview

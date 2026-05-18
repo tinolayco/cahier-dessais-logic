@@ -18,13 +18,16 @@ interface RequirementCardProps {
 export const RequirementCard = ({ requirement, onUpdate, onDelete }: RequirementCardProps) => {
   const [newCriterionText, setNewCriterionText] = useState('')
 
+  const criteria = Array.isArray(requirement.criteria) ? requirement.criteria : []
+  const images = Array.isArray(requirement.images) ? requirement.images : []
+
   const handleAddCriterion = () => {
     if (!newCriterionText.trim()) return
 
     onUpdate({
       ...requirement,
       criteria: [
-        ...requirement.criteria,
+        ...criteria,
         {
           id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           text: newCriterionText,
@@ -38,7 +41,7 @@ export const RequirementCard = ({ requirement, onUpdate, onDelete }: Requirement
   const handleToggleCriterion = (criterionId: string) => {
     onUpdate({
       ...requirement,
-      criteria: requirement.criteria.map((c) =>
+      criteria: criteria.map((c) =>
         c.id === criterionId ? { ...c, checked: !c.checked } : c
       )
     })
@@ -47,21 +50,21 @@ export const RequirementCard = ({ requirement, onUpdate, onDelete }: Requirement
   const handleDeleteCriterion = (criterionId: string) => {
     onUpdate({
       ...requirement,
-      criteria: requirement.criteria.filter((c) => c.id !== criterionId)
+      criteria: criteria.filter((c) => c.id !== criterionId)
     })
   }
 
   const handleAddImage = (base64: string) => {
     onUpdate({
       ...requirement,
-      images: [...requirement.images, base64]
+      images: [...images, base64]
     })
   }
 
   const handleRemoveImage = (index: number) => {
     onUpdate({
       ...requirement,
-      images: requirement.images.filter((_, i) => i !== index)
+      images: images.filter((_, i) => i !== index)
     })
   }
 
@@ -98,9 +101,9 @@ export const RequirementCard = ({ requirement, onUpdate, onDelete }: Requirement
               Télécharger, coller ou glisser des images (max 2Mo)
             </span>
           </div>
-          {requirement.images.length > 0 && (
+          {images.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-2">
-              {requirement.images.map((img, index) => (
+              {images.map((img, index) => (
                 <ImagePreview
                   key={index}
                   src={img}
@@ -116,7 +119,7 @@ export const RequirementCard = ({ requirement, onUpdate, onDelete }: Requirement
         <div>
           <h4 className="text-sm font-semibold mb-2">Critères de Réussite/Échec</h4>
           <div className="space-y-2">
-            {requirement.criteria.map((criterion) => (
+            {criteria.map((criterion) => (
               <div
                 key={criterion.id}
                 className="flex items-center gap-2 p-2 rounded hover:bg-muted/50 transition-colors group"
